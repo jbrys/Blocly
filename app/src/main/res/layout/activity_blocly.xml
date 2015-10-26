@@ -5,9 +5,7 @@
               android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textSize="26sp"
+        style="@style/MainText"
         android:text="Hello, World!"
         android:gravity="center"
         android:layout_gravity="center"/>
