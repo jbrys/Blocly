@@ -5,6 +5,7 @@
               android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/text_main"
         style="@style/MainText"
         android:text="Hello, World!"
         android:gravity="center"
