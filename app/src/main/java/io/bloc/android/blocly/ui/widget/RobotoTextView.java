@@ -53,12 +53,15 @@ public class RobotoTextView extends TextView {
             return;
         }
         String robotoFont = stringArray[robotoFontIndex];
-        Typeface robotoTypeface = sTypefaces.get(robotoFont);
+        Typeface robotoTypeface = null;
 
         if (sTypefaces.containsKey(robotoFont)) {
             robotoTypeface = sTypefaces.get(robotoFont);
         } else {
-            robotoTypeface = Typeface.createFromAsset(getResources().getAssets(), "fonts/RobotoTTf/" + robotoFont);
+            robotoTypeface = Typeface.createFromAsset(getResources().getAssets(), "fonts/RobotoTTF/" + robotoFont);
+            sTypefaces.put(robotoFont, robotoTypeface);
         }
+
+        setTypeface(robotoTypeface);
     }
 }
