@@ -81,7 +81,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-            Log.e(TAG, "onLoadingFailed: " + failReason.toString() + " for URL: " + imageUri);
+            Log.e(TAG, "onLoadingFailed: " + failReason.toString() + " for URL: " + imageUri, failReason.getCause());
         }
 
         @Override

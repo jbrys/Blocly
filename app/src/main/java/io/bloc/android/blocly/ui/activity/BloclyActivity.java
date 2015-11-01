@@ -21,6 +21,8 @@ public class BloclyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
 
+        
+
         itemAdapter = new ItemAdapter();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
