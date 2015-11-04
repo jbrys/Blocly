@@ -1,6 +1,7 @@
 package io.bloc.android.blocly.ui.adapter;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,6 +110,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onClick(View view) {
+//            not sure how to set this back to the previous background if done programatically
+            Drawable background = view.getBackground();
+
+//            while (view.isFocused()) {
+//                view.setBackgroundColor(view.getResources().getColor(R.color.primary_dark));
+//            }
+//
+//            view.setBackgroundDrawable(background);
             Toast.makeText(view.getContext(), mRssItem.getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
