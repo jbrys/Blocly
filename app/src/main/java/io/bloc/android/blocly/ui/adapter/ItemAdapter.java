@@ -66,10 +66,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             content = (TextView) itemView.findViewById(R.id.tv_rss_item_content);
             headerWrapper = itemView.findViewById(R.id.fl_rss_item_image_header);
             headerImage = (ImageView) headerWrapper.findViewById(R.id.iv_rss_item_image);
+            archiveCheckbox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_check_mark);
+            favoriteCheckbox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_favorite_star);
             itemView.setOnClickListener(this);
 
             archiveCheckbox.setOnCheckedChangeListener(this);
-            archiveCheckbox.setOnCheckedChangeListener(this);
+            favoriteCheckbox.setOnCheckedChangeListener(this);
         }
 
         void update(RssFeed rssFeed, RssItem rssItem) {
