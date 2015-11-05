@@ -27,6 +27,7 @@
     </style>
 
     <style name="Button">
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@drawable/btn_text_drawable</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
