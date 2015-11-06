@@ -40,7 +40,7 @@ public class DataSource {
                     BloclyApplication.getSharedInstance().getString(R.string.placeholder_content),
                     "http://favoritefeed.net?story_id=an-incredible-news-story",
                     // Had to replace this image since the orginal was returning 404
-                    //"http://rs1img.memecdn.com/silly-dog_o_511213.jpg",
+//                    "http://rs1img.memecdn.com/silly-dog_o_511213.jpg",
                     "http://i.kinja-img.com/gawker-media/image/upload/s--gnSWo1nI--/japbcvpavbzau9dbuaxf.jpg",
                     0, System.currentTimeMillis(), false, false, false));
         }

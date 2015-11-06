@@ -110,6 +110,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            animateImage(false);
             Log.e(TAG, "onLoadingFailed: " + failReason.toString() + " for URL: " + imageUri, failReason.getCause());
         }
 
@@ -117,7 +118,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             if (imageUri.equals(mRssItem.getImageUrl())) {
                 headerImage.setImageBitmap(loadedImage);
-                headerImage.setVisibility(View.VISIBLE);
+//                headerImage.setVisibility(View.VISIBLE);
+                animateImage(true);
             }
         }
 
@@ -170,7 +172,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             } else {
                 content.setVisibility(View.VISIBLE);
             }
-            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener(){
+            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
 
@@ -196,6 +198,48 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                 }
             });
             contentExpanded = expand;
+        }
+
+        private void animateImage(final boolean expand) {
+
+            headerImage.setVisibility(View.GONE);
+            int startingHeight = headerWrapper.getMeasuredHeight();
+            int finalHeight;
+
+            if (expand){
+                headerImage.setVisibility(View.VISIBLE);
+                headerImage.setAlpha(0f);
+                headerWrapper.measure(
+                        View.MeasureSpec.makeMeasureSpec(content.getWidth(), View.MeasureSpec.EXACTLY),
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                finalHeight = headerWrapper.getMeasuredHeight();
+            } else {
+                headerImage.setVisibility(View.GONE);
+                finalHeight = 0;
+            }
+            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    float wrapperAlpha = expand ? 1f - animatedFraction : animatedFraction;
+                    float imageAlpha = 1f - wrapperAlpha;
+
+                    headerImage.setAlpha(imageAlpha);
+
+                    headerWrapper.getLayoutParams().height = animatedFraction == 1f ?
+                            ViewGroup.LayoutParams.WRAP_CONTENT :
+                            (Integer) valueAnimator.getAnimatedValue();
+
+                    headerWrapper.requestLayout();
+                    if (animatedFraction == 1f) {
+                        if (!expand) {
+                            headerWrapper.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            });
         }
 
         private void startAnimator(int start, int end, ValueAnimator.AnimatorUpdateListener animatorUpdateListener) {
