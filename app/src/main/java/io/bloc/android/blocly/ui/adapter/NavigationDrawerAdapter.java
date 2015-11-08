@@ -90,7 +90,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(), "Nothing...yet!", Toast.LENGTH_SHORT).show();
+            View parent = (View) view.getParent();
+            Toast.makeText(parent.getContext(), "Nothing...yet!", Toast.LENGTH_SHORT).show();
+
         }
     }
 }
