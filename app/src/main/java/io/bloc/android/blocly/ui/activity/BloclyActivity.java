@@ -223,6 +223,8 @@ public class BloclyActivity extends ActionBarActivity
         if (positionToExpand > -1) {
             itemAdapter.notifyItemChanged(positionToExpand);
         }
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
+        recyclerView.scrollToPosition(Integer.valueOf(rssItem.getGuid()));
 
     }
 
