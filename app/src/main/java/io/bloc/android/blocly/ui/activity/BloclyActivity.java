@@ -208,7 +208,7 @@ public class BloclyActivity extends ActionBarActivity
         int positionToContract = -1;
 
         if (itemAdapter.getExpandedItem() != null) {
-            positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(rssItem);
+            positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(itemAdapter.getExpandedItem());
         }
 
         if (itemAdapter.getExpandedItem() != rssItem) {
