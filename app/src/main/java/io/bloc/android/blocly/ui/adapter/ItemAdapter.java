@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -38,6 +37,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     public static interface Delegate {
         public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
+        public void onVisitClicked(ItemAdapter itemAdapter, RssItem rssItem);
     }
 
     private static String TAG = ItemAdapter.class.getSimpleName();
@@ -210,7 +210,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                    getDelegate().onItemClicked(ItemAdapter.this, mRssItem);
                }
             } else {
-                Toast.makeText(view.getContext(), "Visit " + mRssItem.getUrl(), Toast.LENGTH_SHORT).show();
+                if (getDelegate() != null) {
+                    getDelegate().onVisitClicked(ItemAdapter.this, mRssItem);
+                }
             }
         }
 
@@ -218,6 +220,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             Log.v(TAG, "Check changed to: " + isChecked);
         }
+
 
         /*
         * Private Methods
