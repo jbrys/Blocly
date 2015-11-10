@@ -5,6 +5,7 @@
           android:icon="@drawable/ic_share_selector"
           android:title="@string/menu_share"
           android:orderInCategory="0"
+          android:visible="false"
           app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_search"

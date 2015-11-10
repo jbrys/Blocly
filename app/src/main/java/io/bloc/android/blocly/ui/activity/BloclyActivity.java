@@ -1,5 +1,6 @@
 package io.bloc.android.blocly.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class BloclyActivity extends ActionBarActivity
     private DrawerLayout drawerLayout;
     private NavigationDrawerAdapter navigationDrawerAdapter;
     private Menu menu;
+    private MenuItem shareItem;
     private View overflowButton;
 
     @Override
@@ -151,6 +153,16 @@ public class BloclyActivity extends ActionBarActivity
         if (drawerToggle.onOptionsItemSelected(item)){
             return true;
         }
+
+        if (item.equals(shareItem)) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, itemAdapter.getExpandedItem().getUrl());
+            intent.setType("text/plain");
+            startActivity(intent);
+        }
+
+
         Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
     }
@@ -160,8 +172,11 @@ public class BloclyActivity extends ActionBarActivity
 
         getMenuInflater().inflate(R.menu.blocly, menu);
         this.menu = menu;
+        shareItem = menu.findItem(R.id.action_share);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     /*
     * NavigationDrawerAdapterDelegate
@@ -207,6 +222,7 @@ public class BloclyActivity extends ActionBarActivity
         int positionToExpand = -1;
         int positionToContract = -1;
 
+
         if (itemAdapter.getExpandedItem() != null) {
             positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(itemAdapter.getExpandedItem());
         }
@@ -219,9 +235,11 @@ public class BloclyActivity extends ActionBarActivity
         }
         if (positionToContract > -1) {
             itemAdapter.notifyItemChanged(positionToContract);
+            shareItem.setVisible(false);
         }
         if (positionToExpand > -1) {
             itemAdapter.notifyItemChanged(positionToExpand);
+            shareItem.setVisible(true);
         }
 
     }
