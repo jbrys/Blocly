@@ -2,6 +2,8 @@ package io.bloc.android.blocly.ui.activity;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +23,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.R;
@@ -36,6 +40,8 @@ public class BloclyActivity extends ActionBarActivity
         NavigationDrawerAdapter.NavigationDrawerAdapterDelegate,
         ItemAdapter.DataSource,
         ItemAdapter.Delegate {
+
+    private String TAG = BloclyActivity.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
@@ -145,6 +151,28 @@ public class BloclyActivity extends ActionBarActivity
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
+
+        PackageManager packageManager = getPackageManager();
+
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+        List<ResolveInfo> webActivities = packageManager.queryIntentActivities(webIntent, 0);
+        for (ResolveInfo info : webActivities) {
+            Log.v(TAG, "Opens web: " + info.activityInfo.packageName);
+        }
+
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+        List<ResolveInfo> phoneActivities = packageManager.queryIntentActivities(phoneIntent, 0);
+        for (ResolveInfo info : phoneActivities) {
+            Log.v(TAG, "Opens phone: " + info.activityInfo.packageName);
+        }
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "fake@notreal.com", null));
+        List<ResolveInfo> emailAcivities = packageManager.queryIntentActivities(emailIntent, 0);
+        for (ResolveInfo info : emailAcivities) {
+            Log.v(TAG, "Opens email: " + info.activityInfo.packageName);
+        }
+
+
     }
 
     @Override
