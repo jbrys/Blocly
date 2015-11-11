@@ -40,7 +40,7 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
 
     @Override
     public List<FeedResponse> performRequest() {
-        List<FeedResponse> responseFeeds = new ArrayList<>(feedUrls.length);
+        List<FeedResponse> responseFeeds = new ArrayList<FeedResponse>(feedUrls.length);
         for (String feedUrlString : feedUrls) {
             InputStream inputStream = openStream(feedUrlString);
             if (inputStream == null) {

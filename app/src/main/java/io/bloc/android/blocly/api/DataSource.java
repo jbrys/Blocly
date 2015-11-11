@@ -1,7 +1,10 @@
 package io.bloc.android.blocly.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.R;
@@ -14,20 +17,27 @@ import io.bloc.android.blocly.api.network.GetFeedsNetworkRequest;
  */
 public class DataSource {
 
+
     private List<RssFeed> feeds;
     private List<RssItem> items;
+    List<GetFeedsNetworkRequest.FeedResponse> feedResponse;
+
 
     public DataSource() {
         feeds = new ArrayList<RssFeed>();
         items = new ArrayList<RssItem>();
-        createFakeData();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
+                feedResponse = new GetFeedsNetworkRequest("http://www.npr.org/rss/rss.php?id=1001").performRequest();
+                createTestData(feedResponse);
             }
         }).start();
+
+//        createFakeData();
+
+
     }
 
     public List<RssFeed> getFeeds() {
@@ -53,4 +63,40 @@ public class DataSource {
                     0, System.currentTimeMillis(), false, false, false));
         }
     }
+
+    void createTestData(List<GetFeedsNetworkRequest.FeedResponse> feedResponse) {
+
+        GetFeedsNetworkRequest.FeedResponse feed = feedResponse.get(0);
+
+
+        int itemIndex = 0;
+        for (GetFeedsNetworkRequest.ItemResponse item : feed.channelItems) {
+            long pubDate = System.currentTimeMillis();
+            SimpleDateFormat f = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z", Locale.ENGLISH);
+            try {
+                pubDate = f.parse(item.itemPubDate).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            items.add(new RssItem(item.itemGUID,
+                    item.itemTitle,
+                    item.itemDescription,
+                    item.itemURL,
+                    item.itemEnclosureURL,
+                    itemIndex,
+                    pubDate,
+                    false, false, false
+            ));
+            itemIndex++;
+        }
+        feeds.add(new RssFeed(feed.channelTitle,
+                feed.channelDescription,
+                feed.channelURL,
+                feed.channelFeedURL));
+
+    }
+
+
 }
+

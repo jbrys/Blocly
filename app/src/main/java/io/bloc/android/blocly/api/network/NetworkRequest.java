@@ -22,7 +22,7 @@ public abstract class NetworkRequest<Result> {
     public abstract Result performRequest();
 
     protected InputStream openStream(String urlString) {
-        URL url = null;
+        URL url;
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
