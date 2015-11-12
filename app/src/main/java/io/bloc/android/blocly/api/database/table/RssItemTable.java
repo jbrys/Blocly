@@ -5,16 +5,16 @@ package io.bloc.android.blocly.api.database.table;
  */
 public class RssItemTable extends Table {
 
-    private static final String COLUMN_LINK = "link";
-    private static final String COLUMN_TITLE = "title";
-    private static final String COLUMN_DESCRIPTION = "description";
-    private static final String COLUMN_GUID = "guid";
-    private static final String COLUMN_PUB_DATE = "pub_date";
-    private static final String COLUMN_ENCLOSURE = "enclosure";
-    private static final String COLUMN_MIME_TYPE = "mime_type";
-    private static final String COLUMN_RSS_FEED = "rss_feed";
-    private static final String COLUMN_FAVORITE = "is_favorite";
-    private static final String COLUMN_ARCHIVED = "is_archived";
+    public static final String COLUMN_LINK = "link";
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_DESCRIPTION = "description";
+    public static final String COLUMN_GUID = "guid";
+    public static final String COLUMN_PUB_DATE = "pub_date";
+    public static final String COLUMN_ENCLOSURE = "enclosure";
+    public static final String COLUMN_MIME_TYPE = "mime_type";
+    public static final String COLUMN_RSS_FEED = "rss_feed";
+    public static final String COLUMN_FAVORITE = "is_favorite";
+    public static final String COLUMN_ARCHIVED = "is_archived";
 
     @Override
     public String getName() {
@@ -36,4 +36,5 @@ public class RssItemTable extends Table {
                 + COLUMN_FAVORITE + " INTEGER DEFAULT 0,"
                 + COLUMN_ARCHIVED + " INTEGER DEFAULT 0)";
     }
+
 }

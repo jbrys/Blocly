@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public abstract class Table {
 
-    protected static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "id";
 
     public abstract String getName();
 

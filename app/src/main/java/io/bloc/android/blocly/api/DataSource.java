@@ -1,9 +1,13 @@
 package io.bloc.android.blocly.api;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.BuildConfig;
@@ -25,8 +29,10 @@ public class DataSource {
     private RssItemTable rssItemTable;
     private List<RssFeed> feeds;
     private List<RssItem> items;
+    private List<GetFeedsNetworkRequest.FeedResponse> feedResponse;
 
     public DataSource() {
+
         rssFeedTable = new RssFeedTable();
         rssItemTable = new RssItemTable();
         databaseOpenHelper = new DatabaseOpenHelper(BloclyApplication.getSharedInstance(),
@@ -43,10 +49,53 @@ public class DataSource {
                     BloclyApplication.getSharedInstance().deleteDatabase("blocly_db");
                 }
                 SQLiteDatabase writeableDatabase = databaseOpenHelper.getWritableDatabase();
-                new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
+                feedResponse = new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
+
+                GetFeedsNetworkRequest.FeedResponse feed = feedResponse.get(0);
+
+                ContentValues feedValues = new ContentValues();
+                feedValues.put(rssFeedTable.COLUMN_ID, 0);
+                feedValues.put(rssFeedTable.COLUMN_FEED_URL, feed.channelURL);
+                feedValues.put(rssFeedTable.COLUMN_TITLE, feed.channelTitle);
+                feedValues.put(rssFeedTable.COLUMN_DESCRIPTION, feed.channelDescription);
+                feedValues.put(rssFeedTable.COLUMN_FEED_URL, feed.channelFeedURL);
+
+
+                writeableDatabase.insert(rssFeedTable.getName(), null, feedValues);
+
+                int itemIndex = 0;
+                for (GetFeedsNetworkRequest.ItemResponse item : feed.channelItems){
+
+                    long pubDate = System.currentTimeMillis();
+                    SimpleDateFormat f = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z", Locale.ENGLISH);
+                    try {
+                        pubDate = f.parse(item.itemPubDate).getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    ContentValues itemValues = new ContentValues();
+                    itemValues.put(rssItemTable.COLUMN_ID, itemIndex);
+                    itemValues.put(rssItemTable.COLUMN_LINK, item.itemURL);
+                    itemValues.put(rssItemTable.COLUMN_TITLE, item.itemTitle);
+                    itemValues.put(rssItemTable.COLUMN_DESCRIPTION, item.itemDescription);
+                    itemValues.put(rssItemTable.COLUMN_GUID, item.itemGUID);
+                    itemValues.put(rssItemTable.COLUMN_PUB_DATE, pubDate);
+                    itemValues.put(rssItemTable.COLUMN_ENCLOSURE, item.itemEnclosureURL);
+                    itemValues.put(rssItemTable.COLUMN_MIME_TYPE, item.itemEnclosureMIMEType);
+                    itemValues.put(rssItemTable.COLUMN_RSS_FEED, 0);
+                    itemValues.put(rssItemTable.COLUMN_FAVORITE, 0);
+                    itemValues.put(rssItemTable.COLUMN_ARCHIVED, 0);
+
+                    writeableDatabase.insert(rssItemTable.getName(), null, itemValues);
+                    itemIndex++;
+                }
+
+
             }
         }).start();
     }
+
+
 
     public List<RssFeed> getFeeds() {
         return feeds;
