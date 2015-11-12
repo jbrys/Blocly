@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.R;
@@ -21,6 +22,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         NAVIGATION_OPTION_FAVORITES,
         NAVIGATION_OPTION_ARCHIVED
     }
+
+    public static interface  DrawerClickListener {
+        public void didSelectDrawerOption(NavigationDrawerAdapter adapter);
+
+    }
+
+    WeakReference<DrawerClickListener> drawerClickListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,6 +51,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public int getItemCount() {
         return NavigationOption.values().length
                 + BloclyApplication.getSharedDataSource().getFeeds().size();
+    }
+
+    public DrawerClickListener getDrawerClickListener(){
+        if (drawerClickListener == null){
+            return null;
+        }
+        return drawerClickListener.get();
+    }
+
+    public void setDrawerClickListener(DrawerClickListener listener){
+        this.drawerClickListener = new WeakReference<DrawerClickListener>(listener);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -90,8 +109,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
         @Override
         public void onClick(View view) {
-            View parent = (View) view.getParent();
-            Toast.makeText(parent.getContext(), "Nothing...yet!", Toast.LENGTH_SHORT).show();
+
+            if (getDrawerClickListener() == null){
+                return;
+            }
+
+            getDrawerClickListener().didSelectDrawerOption(NavigationDrawerAdapter.this);
+//            Toast.makeText(view.getContext(), "Nothing...yet!", Toast.LENGTH_SHORT).show();
 
         }
     }
