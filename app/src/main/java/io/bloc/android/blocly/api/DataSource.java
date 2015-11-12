@@ -1,10 +1,16 @@
 package io.bloc.android.blocly.api;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.bloc.android.blocly.BloclyApplication;
+import io.bloc.android.blocly.BuildConfig;
 import io.bloc.android.blocly.R;
+import io.bloc.android.blocly.api.database.DatabaseOpenHelper;
+import io.bloc.android.blocly.api.database.table.RssFeedTable;
+import io.bloc.android.blocly.api.database.table.RssItemTable;
 import io.bloc.android.blocly.api.model.RssFeed;
 import io.bloc.android.blocly.api.model.RssItem;
 import io.bloc.android.blocly.api.network.GetFeedsNetworkRequest;
@@ -14,10 +20,18 @@ import io.bloc.android.blocly.api.network.GetFeedsNetworkRequest;
  */
 public class DataSource {
 
+    private DatabaseOpenHelper databaseOpenHelper;
+    private RssFeedTable rssFeedTable;
+    private RssItemTable rssItemTable;
     private List<RssFeed> feeds;
     private List<RssItem> items;
 
     public DataSource() {
+        rssFeedTable = new RssFeedTable();
+        rssItemTable = new RssItemTable();
+        databaseOpenHelper = new DatabaseOpenHelper(BloclyApplication.getSharedInstance(),
+                rssFeedTable, rssItemTable);
+
         feeds = new ArrayList<RssFeed>();
         items = new ArrayList<RssItem>();
         createFakeData();
@@ -25,6 +39,10 @@ public class DataSource {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                if (BuildConfig.DEBUG && false) {
+                    BloclyApplication.getSharedInstance().deleteDatabase("blocly_db");
+                }
+                SQLiteDatabase writeableDatabase = databaseOpenHelper.getWritableDatabase();
                 new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
             }
         }).start();
