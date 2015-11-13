@@ -60,7 +60,7 @@ public class DataSource {
 
                 for (GetFeedsNetworkRequest.ItemResponse itemResponse : androidCentral.channelItems) {
                     long itemPubDate = System.currentTimeMillis();
-                    DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy kk:mm:ss z", Locale.ENGLISH);
+                    DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z", Locale.ENGLISH);
                     try {
                         itemPubDate = dateFormat.parse(itemResponse.itemPubDate).getTime();
                     } catch (ParseException e) {
