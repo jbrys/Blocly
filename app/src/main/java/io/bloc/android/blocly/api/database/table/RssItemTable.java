@@ -95,6 +95,8 @@ public class RssItemTable extends Table {
         return getBoolean(cursor, COLUMN_ARCHIVED);
     }
 
+
+
     private static final String NAME = "rss_items";
 
     private static final String COLUMN_LINK = "link";
@@ -127,5 +129,35 @@ public class RssItemTable extends Table {
                 + COLUMN_RSS_FEED + " INTEGER,"
                 + COLUMN_FAVORITE + " INTEGER DEFAULT 0,"
                 + COLUMN_ARCHIVED + " INTEGER DEFAULT 0)";
+    }
+
+    public Cursor getAllArchived(SQLiteDatabase readableDb) {
+        return readableDb.query(true, getName(), null, COLUMN_ARCHIVED + "= ?", new String[] {"true"},
+                null, null, null, null);
+    }
+
+    public Cursor getAllArchivedFromFeed(SQLiteDatabase readableDb, String feedId) {
+        return readableDb.query(true, getName(), null, COLUMN_ARCHIVED + "= ?, " + COLUMN_RSS_FEED + "= ?",
+                new String[] {"true", feedId}, null, null, null, null);
+    }
+
+    public Cursor getAllFavorited(SQLiteDatabase readableDb) {
+        return readableDb.query(true, getName(), null, COLUMN_FAVORITE + "= ?", new String[] {"true"},
+                null, null, null, null);
+    }
+
+    public Cursor getAllFavoritedFromFeed(SQLiteDatabase readableDb, String feedId) {
+        return readableDb.query(true, getName(), null, COLUMN_FAVORITE + "=?, " + COLUMN_RSS_FEED + "= ?",
+                new String[] {"true", feedId}, null, null, null, null);
+    }
+
+    public Cursor getAllFromFeed(SQLiteDatabase readableDb, String feedId) {
+        return readableDb.query(true, getName(), null, COLUMN_RSS_FEED + "= ?", new String[]{feedId},
+                null, null, null, null);
+    }
+
+    public Cursor getAllFromFeedWithOffsetAndLimit(SQLiteDatabase readableDb, String feedId, int offset, int limit) {
+        return readableDb.query(true, getName(), null, COLUMN_RSS_FEED + "= ?", new String[]{feedId},
+                null, null, null, Integer.toString(limit) + " OFFSET " + Integer.toString(offset));
     }
 }
