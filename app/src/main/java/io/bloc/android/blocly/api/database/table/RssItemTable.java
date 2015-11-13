@@ -1,6 +1,7 @@
 package io.bloc.android.blocly.api.database.table;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -56,6 +57,8 @@ public class RssItemTable extends Table {
         public long insert(SQLiteDatabase writableDB) {
             return writableDB.insert(RssItemTable.NAME, null, values);
         }
+
+
     }
 
     private static final String NAME = "rss_items";
@@ -90,5 +93,9 @@ public class RssItemTable extends Table {
                 + COLUMN_RSS_FEED + " INTEGER,"
                 + COLUMN_FAVORITE + " INTEGER DEFAULT 0,"
                 + COLUMN_ARCHIVED + " INTEGER DEFAULT 0)";
+    }
+
+    public Cursor query(SQLiteDatabase readableDB) {
+        return readableDB.query(RssItemTable.NAME, null, null, null, null, null, RssItemTable.COLUMN_PUB_DATE + " DESC", "10");
     }
 }

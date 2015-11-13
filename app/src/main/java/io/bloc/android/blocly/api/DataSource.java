@@ -60,7 +60,7 @@ public class DataSource {
 
                 for (GetFeedsNetworkRequest.ItemResponse itemResponse : androidCentral.channelItems) {
                     long itemPubDate = System.currentTimeMillis();
-                    DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM, yyyy kk:mm:ss z", Locale.ENGLISH);
+                    DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z", Locale.ENGLISH);
                     try {
                         itemPubDate = dateFormat.parse(itemResponse.itemPubDate).getTime();
                     } catch (ParseException e) {
@@ -79,6 +79,8 @@ public class DataSource {
                             .insert(writableDatabase);
 
                 }
+
+
             }
         }).start();
     }
@@ -90,6 +92,15 @@ public class DataSource {
     public List<RssItem> getItems() {
         return items;
     }
+
+    public RssItemTable getRssItemTable(){
+        return rssItemTable;
+    }
+
+    public SQLiteDatabase getReadbaleDB(){
+        return databaseOpenHelper.getReadableDatabase();
+    }
+
 
     void createFakeData() {
         feeds.add(new RssFeed("My Favorite Feed",

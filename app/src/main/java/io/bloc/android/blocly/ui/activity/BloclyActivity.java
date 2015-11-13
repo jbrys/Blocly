@@ -3,6 +3,8 @@ package io.bloc.android.blocly.ui.activity;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -145,6 +147,9 @@ public class BloclyActivity extends ActionBarActivity
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
+
+        SQLiteDatabase readableDB = BloclyApplication.getSharedDataSource().getReadbaleDB();
+        Cursor result = BloclyApplication.getSharedDataSource().getRssItemTable().query(readableDB);
     }
 
     @Override
