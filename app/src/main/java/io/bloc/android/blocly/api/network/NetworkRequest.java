@@ -19,6 +19,8 @@ public abstract class NetworkRequest<Result> {
         this.errorCode = errorCode;
     }
 
+    public int getErrorCode() {return errorCode;}
+
     public abstract Result performRequest();
 
     protected InputStream openStream(String urlString) {
