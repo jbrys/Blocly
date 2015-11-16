@@ -101,6 +101,11 @@ public class RssItemTable extends Table {
                 null, null, COLUMN_PUB_DATE + " DESC", null);
     }
 
+    public static Cursor fetchItemsByLink(SQLiteDatabase readonlyDatabase, String link) {
+        return readonlyDatabase.query(true, NAME, null, COLUMN_LINK + " = ?",
+                new String[] {link}, null, null, null, null);
+    }
+
     private static final String NAME = "rss_items";
 
     private static final String COLUMN_LINK = "link";
