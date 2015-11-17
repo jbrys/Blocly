@@ -1,7 +1,5 @@
 package io.bloc.android.blocly.api.network;
 
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
@@ -12,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +25,8 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
 
     public static final int ERROR_PARSING = 3;
 
+    public static final String YOUTUBE_THUMB_URL = "http://img.youtube.com/vi/";
+
     private static final String XML_TAG_TITLE = "title";
     private static final String XML_TAG_DESCRIPTION = "description";
     private static final String XML_TAG_LINK = "link";
@@ -35,6 +36,7 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
     private static final String XML_TAG_ENCLOSURE = "enclosure";
     private static final String XML_TAG_CONTENT_ENCODED = "content:encoded";
     private static final String XML_TAG_MEDIA_CONTENT = "media:content";
+    private static final String XML_TAG_MEDIA_THUMBNAIL = "media:thumbnail";
     private static final String XML_ATTRIBUTE_URL = "url";
     private static final String XML_ATTRIBUTE_TYPE = "type";
 
@@ -87,6 +89,13 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                         } else if (XML_TAG_DESCRIPTION.equalsIgnoreCase(tag)){
                             String descriptionText = tagNode.getTextContent();
                             itemImageURL = parseImageFromHTML(descriptionText);
+                            if (itemImageURL == null){
+                                String videoURL = parseVideoURLFromHTML(descriptionText);
+                                URL youTubeURL = new URL(videoURL);
+                                String videoId = youTubeURL.getQuery();
+                                itemImageURL = YOUTUBE_THUMB_URL + videoId + "/default.jpg";
+
+                            }
                             itemDescription = parseTextFromHTML(descriptionText);
                         } else if (XML_TAG_ENCLOSURE.equalsIgnoreCase(tag)) {
                             NamedNodeMap enclosureAttributes = tagNode.getAttributes();
@@ -104,6 +113,9 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                             NamedNodeMap mediaAttributes = tagNode.getAttributes();
                             itemMediaURL = mediaAttributes.getNamedItem(XML_ATTRIBUTE_URL).getTextContent();
                             itemMediaMIMEType = mediaAttributes.getNamedItem(XML_ATTRIBUTE_TYPE).getTextContent();
+                        } else if (XML_TAG_MEDIA_THUMBNAIL.equalsIgnoreCase(tag)) {
+                            NamedNodeMap mediaAttributes = tagNode.getAttributes();
+                            itemMediaURL = mediaAttributes.getNamedItem(XML_ATTRIBUTE_URL).getTextContent();
                         }
                     }
                     if (itemEnclosureURL == null){
@@ -161,8 +173,17 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
             return null;
         }
 
-        Log.v(GetFeedsNetworkRequest.class.getSimpleName(), imgElements.attr("src"));
         return imgElements.attr("src");
+    }
+
+    static String parseVideoURLFromHTML(String htmlString) {
+        org.jsoup.nodes.Document document = Jsoup.parse(htmlString);
+        Elements vidElements = document.getElementsByAttributeValueContaining("href", "youtube.com");
+        if (vidElements.isEmpty()) {
+            return null;
+        }
+
+        return vidElements.attr("href");
     }
 
     public static class FeedResponse {
