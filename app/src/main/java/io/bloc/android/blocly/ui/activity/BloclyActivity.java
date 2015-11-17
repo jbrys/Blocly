@@ -14,7 +14,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,6 +70,7 @@ public class BloclyActivity extends ActionBarActivity
             @Override
             public void onRefresh() {
                 BloclyApplication.getSharedDataSource().fetchNewFeed("http://feeds.feedburner.com/androidcentral?format=xml",
+//                BloclyApplication.getSharedDataSource().fetchNewFeed("http://feeds.ign.com/ign/all?format=xml",
 
                         new DataSource.Callback<RssFeed>() {
                             @Override
@@ -91,7 +91,7 @@ public class BloclyActivity extends ActionBarActivity
                                                 currentItems.addAll(rssItems);
 
                                                 itemAdapter.notifyDataSetChanged();
-//                                                itemAdapter.notifyItemRangeInserted(0, currentItems.size());
+//                                                itemAdapter.notifyItemRangeInserted(0, rssItems.size());
 
                                                 swipeRefreshLayout.setRefreshing(false);
                                             }
