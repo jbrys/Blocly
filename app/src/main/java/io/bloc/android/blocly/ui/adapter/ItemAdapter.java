@@ -37,8 +37,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void didExpandItem(ItemAdapter adapter);
         public void didContractItem(ItemAdapter adapter);
         public void didSelectVisitSite(ItemAdapter adapter, RssItem rssItem);
-        public void didFavoriteItem(ItemAdapter adapter, boolean isFavorite);
-        public void didArchiveItem(ItemAdapter adapter, boolean isArchived);
+        public void didFavoriteItem(ItemAdapter adapter, RssItem rssItem, boolean isFavorite);
+        public void didArchiveItem(ItemAdapter adapter, RssItem rssItem, boolean isArchived);
     }
 
     WeakReference<ItemAdapterDelegate> delegate;
@@ -158,6 +158,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onClick(View view) {
             if (view == itemView) {
                animateContent(!contentExpanded);
+                if (getDelegate() == null){
+                    return;
+                }
                 if (contentExpanded){
                     getDelegate().didExpandItem(ItemAdapter.this);
                 } else {
@@ -173,9 +176,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             Log.v(TAG, "Check changed to: " + isChecked);
             if (compoundButton == archiveCheckbox) {
-                getDelegate().didArchiveItem(ItemAdapter.this, compoundButton.isChecked());
+                getDelegate().didArchiveItem(ItemAdapter.this, mRssItem, compoundButton.isChecked());
             } else {
-                getDelegate().didFavoriteItem(ItemAdapter.this, compoundButton.isChecked());
+                getDelegate().didFavoriteItem(ItemAdapter.this, mRssItem, compoundButton.isChecked());
             }
         }
 
