@@ -14,13 +14,15 @@ import android.widget.Toast;
 
 import io.bloc.android.blocly.R;
 import io.bloc.android.blocly.api.model.RssFeed;
+import io.bloc.android.blocly.api.model.RssItem;
 import io.bloc.android.blocly.ui.adapter.ItemAdapter;
 import io.bloc.android.blocly.ui.adapter.NavigationDrawerAdapter;
 
 /**
  * Created by jeffbrys on 10/24/15.
  */
-public class BloclyActivity extends ActionBarActivity implements NavigationDrawerAdapter.NavigationDrawerAdapterDelegate{
+public class BloclyActivity extends ActionBarActivity implements
+        NavigationDrawerAdapter.NavigationDrawerAdapterDelegate, ItemAdapter.ItemAdapterDelegate{
 
     private ItemAdapter itemAdapter;
     private ActionBarDrawerToggle drawerToggle;
@@ -36,6 +38,7 @@ public class BloclyActivity extends ActionBarActivity implements NavigationDrawe
         setSupportActionBar(toolbar);
 
         itemAdapter = new ItemAdapter();
+        itemAdapter.setDelegate(this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
 
@@ -90,5 +93,30 @@ public class BloclyActivity extends ActionBarActivity implements NavigationDrawe
     public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed) {
         drawerLayout.closeDrawers();
         Toast.makeText(this, "Show RSS items from " + rssFeed.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didExpandItem(ItemAdapter adapter) {
+
+    }
+
+    @Override
+    public void didContractItem(ItemAdapter adapter) {
+
+    }
+
+    @Override
+    public void didSelectVisitSite(ItemAdapter adapter, RssItem rssItem) {
+
+    }
+
+    @Override
+    public void didFavoriteItem(ItemAdapter adapter, RssItem rssItem, boolean isFavorite) {
+
+    }
+
+    @Override
+    public void didArchiveItem(ItemAdapter adapter, RssItem rssItem, boolean isArchived) {
+
     }
 }
