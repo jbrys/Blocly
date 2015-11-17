@@ -204,6 +204,7 @@ public class BloclyActivity extends ActionBarActivity
 
     @Override
     public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem) {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
         int positionToExpand = -1;
         int positionToContract = -1;
 
@@ -222,9 +223,11 @@ public class BloclyActivity extends ActionBarActivity
         }
         if (positionToExpand > -1) {
             itemAdapter.notifyItemChanged(positionToExpand);
+            View targetView = recyclerView.getLayoutManager().findViewByPosition(positionToExpand);
+            recyclerView.smoothScrollBy(0, targetView.getTop());
         }
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
-        recyclerView.scrollToPosition(Integer.valueOf(rssItem.getGuid()));
+
+
 
     }
 
