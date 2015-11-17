@@ -57,27 +57,31 @@ public class DataSource {
 
                 Cursor result =
                         readableDatabase.query(rssFeedTable.getName(), null,
-                        null, null, null, null, null);
+                        RssFeedTable.COLUMN_FEED_URL + " = ?",
+                                new String[] {feed.channelURL}, null, null, null);
+
 
                 if (result.getCount() == 0) {
 
                     ContentValues feedValues = new ContentValues();
-                    feedValues.put(rssFeedTable.COLUMN_ID, 0);
-                    feedValues.put(rssFeedTable.COLUMN_FEED_URL, feed.channelURL);
-                    feedValues.put(rssFeedTable.COLUMN_TITLE, feed.channelTitle);
-                    feedValues.put(rssFeedTable.COLUMN_DESCRIPTION, feed.channelDescription);
-                    feedValues.put(rssFeedTable.COLUMN_FEED_URL, feed.channelFeedURL);
+                    feedValues.put(RssFeedTable.COLUMN_ID, 0);
+                    feedValues.put(RssFeedTable.COLUMN_FEED_URL, feed.channelURL);
+                    feedValues.put(RssFeedTable.COLUMN_TITLE, feed.channelTitle);
+                    feedValues.put(RssFeedTable.COLUMN_DESCRIPTION, feed.channelDescription);
+                    feedValues.put(RssFeedTable.COLUMN_FEED_URL, feed.channelFeedURL);
 
 
                     writeableDatabase.insert(rssFeedTable.getName(), null, feedValues);
                 }
+                result.close();
 
                 int itemIndex = 0;
                 for (GetFeedsNetworkRequest.ItemResponse item : feed.channelItems){
 
                     result = readableDatabase.query(rssItemTable.getName(), null,
-                            rssItemTable.COLUMN_LINK + "=\"" + item.itemURL + "\"",
-                            null, null, null, null, null);
+                            RssItemTable.COLUMN_GUID + " = ?",
+                            new String[]{item.itemGUID}, null, null, null, null);
+
 
 
                     if (result.getCount() == 0) {
@@ -89,21 +93,23 @@ public class DataSource {
                             e.printStackTrace();
                         }
                         ContentValues itemValues = new ContentValues();
-                        itemValues.put(rssItemTable.COLUMN_ID, itemIndex);
-                        itemValues.put(rssItemTable.COLUMN_LINK, item.itemURL);
-                        itemValues.put(rssItemTable.COLUMN_TITLE, item.itemTitle);
-                        itemValues.put(rssItemTable.COLUMN_DESCRIPTION, item.itemDescription);
-                        itemValues.put(rssItemTable.COLUMN_GUID, item.itemGUID);
-                        itemValues.put(rssItemTable.COLUMN_PUB_DATE, pubDate);
-                        itemValues.put(rssItemTable.COLUMN_ENCLOSURE, item.itemEnclosureURL);
-                        itemValues.put(rssItemTable.COLUMN_MIME_TYPE, item.itemEnclosureMIMEType);
-                        itemValues.put(rssItemTable.COLUMN_RSS_FEED, 0);
-                        itemValues.put(rssItemTable.COLUMN_FAVORITE, 0);
-                        itemValues.put(rssItemTable.COLUMN_ARCHIVED, 0);
+                        itemValues.put(RssItemTable.COLUMN_ID, itemIndex);
+                        itemValues.put(RssItemTable.COLUMN_LINK, item.itemURL);
+                        itemValues.put(RssItemTable.COLUMN_TITLE, item.itemTitle);
+                        itemValues.put(RssItemTable.COLUMN_DESCRIPTION, item.itemDescription);
+                        itemValues.put(RssItemTable.COLUMN_GUID, item.itemGUID);
+                        itemValues.put(RssItemTable.COLUMN_PUB_DATE, pubDate);
+                        itemValues.put(RssItemTable.COLUMN_ENCLOSURE, item.itemEnclosureURL);
+                        itemValues.put(RssItemTable.COLUMN_MIME_TYPE, item.itemEnclosureMIMEType);
+                        itemValues.put(RssItemTable.COLUMN_RSS_FEED, 0);
+                        itemValues.put(RssItemTable.COLUMN_FAVORITE, 0);
+                        itemValues.put(RssItemTable.COLUMN_ARCHIVED, 0);
 
                         writeableDatabase.insert(rssItemTable.getName(), null, itemValues);
                         itemIndex++;
                     }
+
+                    result.close();
                 }
 
 
