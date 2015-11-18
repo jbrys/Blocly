@@ -115,6 +115,7 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
                                     currentItems.addAll(0, rssItems);
                                     itemAdapter.notifyItemRangeInserted(0, rssItems.size());
                                 }
+
                                 swipeRefreshLayout.setRefreshing(false);
                             }
 
@@ -125,6 +126,7 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
                         });
             }
         });
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
