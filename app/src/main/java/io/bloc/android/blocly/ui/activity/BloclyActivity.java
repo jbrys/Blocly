@@ -60,6 +60,11 @@ public class BloclyActivity extends ActionBarActivity
         setSupportActionBar(toolbar);
 
 
+        if (onTablet) {
+            Toolbar itemDetailToolbar = (Toolbar) findViewById(R.id.tb_activity_blocly_right_pane);
+            itemDetailToolbar.inflateMenu(R.menu.rss_item_detail);
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_blocly);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, 0, 0) {
@@ -202,6 +207,7 @@ public class BloclyActivity extends ActionBarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
 
         getMenuInflater().inflate(R.menu.blocly, menu);
         this.menu = menu;

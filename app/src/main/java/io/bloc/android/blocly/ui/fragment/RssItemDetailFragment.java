@@ -11,6 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -40,6 +41,7 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
     TextView title;
     TextView content;
     ProgressBar progressBar;
+    Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
         progressBar = (ProgressBar) inflate.findViewById(R.id.pb_fragment_rss_item_detail_header);
         title = (TextView) inflate.findViewById(R.id.tv_fragment_rss_item_detail_title);
         content = (TextView) inflate.findViewById(R.id.tv_fragment_rss_item_detail_content);
+        toolbar = (Toolbar) inflate.findViewById(R.id.tb_activity_blocly_right_pane);
         return inflate;
     }
 
