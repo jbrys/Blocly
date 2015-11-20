@@ -1,17 +1,20 @@
 package io.bloc.android.blocly.ui.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -25,7 +28,7 @@ import io.bloc.android.blocly.api.model.RssItem;
 /**
  * Created by jeffbrys on 11/18/15.
  */
-public class RssItemDetailFragment extends Fragment implements ImageLoadingListener {
+public class RssItemDetailFragment extends Fragment implements ImageLoadingListener, android.support.v7.widget.Toolbar.OnMenuItemClickListener {
 
     private static final String BUNDLE_EXTRA_RSS_ITEM = RssItemDetailFragment.class.getCanonicalName().concat(".EXTRA_RSS_ITEM");
 
@@ -42,6 +45,7 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
     TextView content;
     ProgressBar progressBar;
     Toolbar toolbar;
+    RssItem sidePanelItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
                     if (getActivity() == null) {
                         return;
                     }
+                    sidePanelItem = rssItem;
                     title.setText(rssItem.getTitle());
                     content.setText(rssItem.getDescription());
                     ImageLoader.getInstance().loadImage(rssItem.getImageUrl(), RssItemDetailFragment.this);
@@ -77,7 +82,8 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
         progressBar = (ProgressBar) inflate.findViewById(R.id.pb_fragment_rss_item_detail_header);
         title = (TextView) inflate.findViewById(R.id.tv_fragment_rss_item_detail_title);
         content = (TextView) inflate.findViewById(R.id.tv_fragment_rss_item_detail_content);
-        toolbar = (Toolbar) inflate.findViewById(R.id.tb_activity_blocly_right_pane);
+        toolbar = (Toolbar) getActivity().findViewById(R.id.tb_activity_blocly_right_pane);
+        toolbar.setOnMenuItemClickListener(this);
         return inflate;
     }
 
@@ -128,5 +134,31 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
     @Override
     public void onLoadingCancelled(String imageUri, View view) {
 
+    }
+
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        if (sidePanelItem == null) {return false;}
+
+        if (menuItem.getItemId() == R.id.action_visit_page) {
+            RssItem itemToView = sidePanelItem;
+
+            Intent visitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(itemToView.getUrl()));
+            startActivity(visitIntent);
+        }
+        if (menuItem.getItemId() == R.id.action_share) {
+            RssItem itemToShare = sidePanelItem;
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    String.format("%s (%s)", itemToShare.getTitle(), itemToShare.getUrl()));
+
+            shareIntent.setType("text/plain");
+            Intent chooser = Intent.createChooser(shareIntent, getString(R.string.share_chooser_title));
+            startActivity(chooser);
+        }
+
+        return true;
     }
 }

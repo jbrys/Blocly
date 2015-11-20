@@ -212,6 +212,10 @@ public class BloclyActivity extends ActionBarActivity
         getMenuInflater().inflate(R.menu.blocly, menu);
         this.menu = menu;
         animateShareItem(expandedItem != null);
+
+        if (onTablet) {
+            menu.findItem(R.id.action_share).setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
