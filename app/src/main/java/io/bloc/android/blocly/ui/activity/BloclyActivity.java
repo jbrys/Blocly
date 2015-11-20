@@ -240,7 +240,6 @@ public class BloclyActivity extends ActionBarActivity
                     getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fl_activity_blocly, getFragmentManager().findFragmentByTag(rssFeed.getTitle()))
-                            .addToBackStack(null)
                             .commit();
                 } else {
 
