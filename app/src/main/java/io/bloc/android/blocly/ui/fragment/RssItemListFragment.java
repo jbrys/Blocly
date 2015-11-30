@@ -26,7 +26,8 @@ import io.bloc.android.blocly.ui.adapter.ItemAdapter;
 /**
  * Created by jeffbrys on 11/17/15.
  */
-public class RssItemListFragment extends Fragment implements ItemAdapter.DataSource, ItemAdapter.Delegate {
+public class RssItemListFragment extends Fragment implements ItemAdapter.DataSource, ItemAdapter.Delegate,
+        SwipeRefreshLayout.OnRefreshListener{
 
 
     private static final String BUNDLE_EXTRA_RSS_FEED = RssItemListFragment.class.getCanonicalName().concat(".EXTRA_RSS_FEED");
@@ -37,6 +38,30 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
         RssItemListFragment rssItemListFragment = new RssItemListFragment();
         rssItemListFragment.setArguments(arguments);
         return rssItemListFragment;
+    }
+
+    @Override
+    public void onRefresh() {
+        BloclyApplication.getSharedDataSource().fetchNewItemsForFeed(currentFeed,
+                new DataSource.Callback<List<RssItem>>() {
+                    @Override
+                    public void onSuccess(List<RssItem> rssItems) {
+                        if (getActivity() == null) {
+                            return;
+                        }
+
+                        if (!rssItems.isEmpty()) {
+                            currentItems.addAll(0, rssItems);
+                            itemAdapter.notifyItemRangeInserted(0, rssItems.size());
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     public static interface Delegate {
@@ -100,35 +125,12 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.primary));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                BloclyApplication.getSharedDataSource().fetchNewItemsForFeed(currentFeed,
-                        new DataSource.Callback<List<RssItem>>() {
-                            @Override
-                            public void onSuccess(List<RssItem> rssItems) {
-                                if (getActivity() == null) {
-                                    return;
-                                }
-
-                                if (!rssItems.isEmpty()) {
-                                    currentItems.addAll(0, rssItems);
-                                    itemAdapter.notifyItemRangeInserted(0, rssItems.size());
-                                }
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-
-                            @Override
-                            public void onError(String errorMessage) {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemAdapter);
+
     }
 
     /*

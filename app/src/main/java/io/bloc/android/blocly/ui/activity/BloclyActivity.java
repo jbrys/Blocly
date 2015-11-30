@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -52,7 +51,7 @@ public class BloclyActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Debug.startMethodTracing("BloclyActivity");
+//        Debug.startMethodTracing("BloclyActivity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
 
@@ -214,7 +213,7 @@ public class BloclyActivity extends ActionBarActivity
 
     protected void onDestroy() {
         super.onDestroy();
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
     }
 
     /*
