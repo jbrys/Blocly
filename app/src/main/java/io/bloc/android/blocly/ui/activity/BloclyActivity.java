@@ -150,10 +150,15 @@ public class BloclyActivity extends ActionBarActivity
             public void onSuccess(List<RssFeed> rssFeeds) {
                 allFeeds.addAll(rssFeeds);
                 navigationDrawerAdapter.notifyDataSetChanged();
+
+                RssItemListFragment fragment = RssItemListFragment.fragmentForRssFeed(rssFeeds.get(0));
+
                 getFragmentManager()
                         .beginTransaction()
-                        .add(R.id.fl_activity_blocly, RssItemListFragment.fragmentForRssFeed(rssFeeds.get(0)))
+                        .add(R.id.fl_activity_blocly, fragment)
                         .commit();
+
+                fragment.onRefresh();
             }
 
             @Override
@@ -161,6 +166,8 @@ public class BloclyActivity extends ActionBarActivity
 
             }
         });
+
+
 
     }
 

@@ -25,6 +25,8 @@ public class BloclyApplication extends Application {
         return BloclyApplication.getSharedInstance().getDataSource();
     }
 
+    public static boolean TEST_MODE = true;
+
     private static BloclyApplication sharedInstance;
     private DataSource dataSource;
 

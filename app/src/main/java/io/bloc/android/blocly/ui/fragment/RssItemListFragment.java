@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
                     @Override
                     public void onError(String errorMessage) {
                         swipeRefreshLayout.setRefreshing(false);
+                        Log.v(getClass().getSimpleName(), errorMessage);
                     }
                 });
     }
@@ -100,7 +102,7 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
         if (arguments == null) {
             return;
         }
-        long feedRowId = arguments.getLong(BUNDLE_EXTRA_RSS_FEED);
+        final long feedRowId = arguments.getLong(BUNDLE_EXTRA_RSS_FEED);
         BloclyApplication.getSharedDataSource().fetchFeedWithId(feedRowId, new DataSource.Callback<RssFeed>() {
             @Override
             public void onSuccess(RssFeed rssFeed) {
@@ -108,9 +110,15 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
             }
 
             @Override
-            public void onError(String errorMessage) {}
+            public void onError(String errorMessage) {
+                Log.v(getClass().getSimpleName(), "Failed to fetch feed with ID: " + String.valueOf(feedRowId) + "\n" + errorMessage );
+            }
         });
+
+
     }
+
+
 
     @Nullable
     @Override
@@ -131,6 +139,11 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemAdapter);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     /*

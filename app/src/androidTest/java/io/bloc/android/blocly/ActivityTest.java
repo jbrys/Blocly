@@ -31,7 +31,8 @@ public class ActivityTest extends ActivityInstrumentationTestCase2<BloclyActivit
         mSwipeRefreshLayout = (SwipeRefreshLayout) mActivity.findViewById(R.id.srl_fragment_rss_list);
         mFragment = getActivity().getFragmentManager().findFragmentById(R.id.fl_activity_blocly);
 
-        mFragment.onRefresh();
+        BloclyApplication.TEST_MODE = true;
+
 
     }
 
@@ -42,7 +43,8 @@ public class ActivityTest extends ActivityInstrumentationTestCase2<BloclyActivit
     }
 
     public void testItemHasFavoriteCheckbox() {
-        assertNotNull(mRecyclerView.findViewById(R.id.cb_rss_item_favorite_star));
+
+        assertNotNull(mRecyclerView.getChildAt(0).findViewById(R.id.cb_rss_item_favorite_star));
     }
 
 }

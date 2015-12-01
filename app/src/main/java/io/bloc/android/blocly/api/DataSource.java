@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.BuildConfig;
 import io.bloc.android.blocly.api.database.DatabaseOpenHelper;
 import io.bloc.android.blocly.api.database.table.RssFeedTable;
@@ -152,6 +153,11 @@ public class DataSource {
         submitTask(new Runnable() {
             @Override
             public void run() {
+                if (BloclyApplication.TEST_MODE){
+                    generateFakeData(callbackThreadHandler, callback);
+                    return;
+                }
+
                 GetFeedsNetworkRequest getFeedsNetworkRequest = new GetFeedsNetworkRequest(rssFeed.getFeedUrl());
                 final List<RssItem> newItems = new ArrayList<RssItem>();
                 List<GetFeedsNetworkRequest.FeedResponse> feedResponses = getFeedsNetworkRequest.performRequest();
@@ -177,6 +183,56 @@ public class DataSource {
                 });
             }
         });
+    }
+
+    private void generateFakeData(Handler callbackThreadHandler, final Callback callback) {
+
+        final List<RssItem> rssItemList = new ArrayList<>();
+
+        SQLiteDatabase writableDb = databaseOpenHelper.getWritableDatabase();
+
+        new RssFeedTable.Builder()
+                .setTitle("Fake Feed")
+                .setDescription("This is a fake feed.")
+                .setFeedURL("http://fake.notreal.com")
+                .setSiteURL("http://notreal.com")
+                .insert(writableDb);
+
+        Cursor cursor = writableDb.rawQuery("SELECT * FROM rss_feeds WHERE title = ?", new String[]{"Fake Feed"});
+
+        cursor.moveToFirst();
+        RssFeed feed = feedFromCursor(cursor);
+        cursor.close();
+
+        for (int i = 0; i < 20; i++){
+            new RssItemTable.Builder()
+                    .setRSSFeed(feed.getRowId())
+                    .setTitle("Rss Item " + i)
+                    .setLink("http://example.com/" + i)
+                    .setDescription("Rss Item Description " + i)
+                    .setGUID(String.valueOf(i))
+                    .setEnclosure("http://previews.123rf.com/images/gorkemdemir/gorkemdemir1409/gorkemdemir140901191/31675984-EXAMPLE-red-rubber-stamp-over-a-white-background--Stock-Vector.jpg")
+                    .setPubDate(System.currentTimeMillis())
+                    .insert(writableDb);
+
+        }
+
+        cursor = writableDb.rawQuery("SELECT * FROM rss_items WHERE rss_feed = ?", new String[]{String.valueOf(feed.getRowId())});
+
+        if (cursor.moveToFirst()) {
+            do {
+                rssItemList.add(itemFromCursor(cursor));
+            } while (cursor.moveToNext());
+            cursor.close();
+
+            callbackThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onSuccess(rssItemList);
+                }
+            });
+        }
+
     }
 
     public void fetchNewFeed(final String feedURL, final Callback<RssFeed> callback) {
