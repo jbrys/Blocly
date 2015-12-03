@@ -98,6 +98,14 @@ public class DataSource {
                 BloclyApplication.getSharedInstance().sendBroadcast(new Intent(ACTION_DOWNLOAD_COMPLETED));
             }
         }).start();
+
+        RssItemTable table = new RssItemTable();
+        table.getAllArchived(databaseOpenHelper.getReadableDatabase());
+        table.getAllArchivedFromFeed(databaseOpenHelper.getReadableDatabase(), "0");
+        table.getAllFavorited(databaseOpenHelper.getReadableDatabase());
+        table.getAllFavoritedFromFeed(databaseOpenHelper.getReadableDatabase(), "0");
+        table.getAllFromFeed(databaseOpenHelper.getReadableDatabase(), "0");
+        table.getAllFromFeedWithOffsetAndLimit(databaseOpenHelper.getReadableDatabase(), "0", 2, 10);
     }
 
     public List<RssFeed> getFeeds() {
